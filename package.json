@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-eslint-async-protect",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Protects against missing await keywords on async functions",
   "keywords": [
     "eslint",
