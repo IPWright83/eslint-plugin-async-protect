@@ -21,68 +21,221 @@ RuleTester.setDefaultConfig({
 //------------------------------------------------------------------------------
 const ruleTester = new RuleTester();
 
+const getError = (name, asyncMissing) => asyncMissing ?
+        `The call to '${name}' is missing an await` :
+        `The call to '${name}' has an un-needed await`;
+
 ruleTester.run("async-await", rule, {
 
     valid: [
-        { code: `await fooAsync();` },
-        { code: `foo();` },
-        { code: `const result = await fooAsync();` },
-        { code: `const result = foo();` },
-        { code: `(await fooAsync()).doSomething();` },
-        { code: `foo().doSomething();` },
-        { code: `const result = (await fooAsync()).x;` },
-        { code: `const result = foo().x;` },
-        { code: `await Promise.all([foo2(), foo3()]);` },
+        {
+            code: `
+                (iife = async function() {
+                    await fooAsync();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    foo();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = await fooAsync();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = foo();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    (await fooAsync()).doSomething();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    foo().doSomething();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = (await fooAsync()).x;
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = foo().x;
+                })();`
+        },
+        {
+         code: `
+            (iife = async function() {
+                const result = (await fooAsync()).x.y.z().a.doSomething();
+            })();`
+        },
+        {
+         code: `
+            (iife = async function() {
+                const result = await foo().x.y.z().a.doSomethingAsync();
+            })();`
+
+        },
+        {
+         code: `
+            (iife = async function() {
+                const result = (await foo().x.y.zAsync()).a.doSomething();
+            })();`
+
+        },
     ],
 
     invalid: [
         {
-            code: "fooAsync();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    fooAsync();
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "await foo();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    await foo();
+                })();`,
+            errors: [{ message: getError("foo", false), type: "CallExpression" }],
         },
         {
-            code: "const result = fooAsync();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = fooAsync();
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "const result = await foo();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = await foo();
+                })();`,
+            errors: [{ message: getError("foo", false), type: "CallExpression" }],
         },
         {
-            code: "(fooAsync()).doSomething();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    (fooAsync()).doSomething();
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "fooAsync().doSomething();",  // accessing doSomething() too early / not async
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    fooAsync().doSomething();
+                })();`,  // accessing doSomething() too early / not async
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "await (foo()).doSomething();",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    await fooAsync().x();
+                })();`,
+            errors: [
+                { message: getError("x", false), type: "CallExpression" },
+                { message: getError("fooAsync", true), type: "CallExpression" },
+            ],
         },
         {
-            code: "const result = (await foo()).x;",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    foo().doSomethingAsync();
+                })();`,
+            errors: [{ message: getError("doSomethingAsync", true), type: "CallExpression" }],
         },
         {
-            code: "const result = (fooAsync()).x;",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = (await foo()).x;
+                })();`,
+            errors: [{ message: getError("foo", false), type: "CallExpression" }],
         },
         {
-            code: "const result = fooAsync().x;",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = (fooAsync()).x;
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "const result = fooAsync().x;",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = fooAsync().x;
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
         },
         {
-            code: "Promise.all([foo2(), foo3()]);",
-            errors: [{}],
+            code: `
+                (iife = async function() {
+                    const result = fooAsync().x();
+                })();`,
+            errors: [{
+                message: getError("fooAsync", true),
+                type: "CallExpression",
+            }],
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = foo().xAsync();
+                })();`,
+            errors: [{
+                message: getError("xAsync", true),
+                type: "CallExpression",
+            }],
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = (await foo()).x.y.zAsync().a.doSomething();
+                })();`,
+            errors: [
+                { message: getError("zAsync", true), type: "CallExpression" },
+                { message: getError("foo", false), type: "CallExpression" },
+            ],
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = await foo().x.y.zAsync().a.doSomething();
+                })();`,
+            errors: [
+                { message: getError("doSomething", false), type: "CallExpression" },
+                { message: getError("zAsync", true), type: "CallExpression" },
+            ],
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = foo().x.y.z().a.doSomethingAsync();
+                })();`,
+            errors: [{ message: getError("doSomethingAsync", true), type: "CallExpression" }]
+
+        },
+        {
+            code: `
+                (iife = async function() {
+                    const result = await fooAsync().x.y.z().a.doSomething();
+                })();`,
+             errors: [
+                { message: getError("doSomething", false), type: "CallExpression" },
+                { message: getError("fooAsync", true), type: "CallExpression" },
+            ],
         },
     ]
 });
