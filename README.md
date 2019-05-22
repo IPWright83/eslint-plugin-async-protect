@@ -1,4 +1,4 @@
-# `eslint-async-protect`
+# `eslint-plugin-async-protect`
 This ESLint plugin enforces the following:
 
  - functions defined with the `async` keyword should have an `Async` suffix on the name
