@@ -10,7 +10,6 @@
     "await"
   ],
   "author": "Ian Wright",
-  "main": "lib/index.js",
   "scripts": {
     "test": "mocha tests --recursive"
   },

@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-const rule = require("../../../lib/rules/async-suffix");
+const rule = require("../../src/async-suffix");
 const RuleTester = require("eslint").RuleTester;
 
 RuleTester.setDefaultConfig({

@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-const rule = require("../../../lib/rules/async-await");
+const rule = require("../../src/async-await");
 const RuleTester = require("eslint").RuleTester;
 
 RuleTester.setDefaultConfig({
