@@ -1,9 +1,11 @@
 "use strict";
 
-import AsyncAwait from "./async-await";
-import AsyncSuffix from "./async-suffix";
+const AsyncAwait = require("./async-await");
+const AsyncSuffix = require("./async-suffix");
 
-export const rules = {
-    "async-await": AsyncAwait,
-    "async-suffix": AsyncSuffix,
+module.exports = {
+    rules: {
+        "async-await": AsyncAwait,
+        "async-suffix": AsyncSuffix,
+    },
 };

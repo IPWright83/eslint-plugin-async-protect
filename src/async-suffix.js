@@ -32,12 +32,17 @@ module.exports = {
          * @param  {Boolean} isAsync    Whether the node is marked as async
          */
         const check = (node, identifier, isAsync) => {
+            // Unknown case that we don't handle
+            if (!identifier || !identifier.name) {
+                return;
+            }
+            
             const nameEndsWithAsync = endsWithAsync(identifier.name);
 
             if (isAsync && !nameEndsWithAsync) {
 
                 context.report({
-                    node: node,
+                    node: identifier,
                     message: MISSING_ASYNC,
                     data: { name: identifier.name },
                     // fix: function(fixer) {
@@ -51,7 +56,7 @@ module.exports = {
                 const noneAsyncName = identifier.name.substring(0, lastIndex);
 
                 context.report({
-                    node: node,
+                    node: identifier,
                     message: EXTRA_ASYNC,
                     data: { name: noneAsyncName },
                     // fix: function(fixer) {
