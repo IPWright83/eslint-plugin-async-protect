@@ -26,11 +26,11 @@ const getError = (name, asyncMissing) => asyncMissing ?
         `Non async names should not end with 'Async'. Rename '${name}Async' to '${name}'`;
 
 
-const getFunctionError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "FunctionDeclaration" });
-const getMethodError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "MethodDefinition" });
-const getVariableError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "VariableDeclarator" });
-const getAssignmentError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "AssignmentExpression" });
-const getPropertyError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Property" });
+const getFunctionError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
+const getMethodError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
+const getVariableError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
+const getAssignmentError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
+const getPropertyError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
 
 ruleTester.run("async-suffix", rule, {
 
