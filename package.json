@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-async-protect",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Protects against missing await keywords on async functions",
   "keywords": [
     "eslint",
@@ -9,6 +9,10 @@
     "async",
     "await"
   ],
+  "homepage": "https://github.com/IPWright83/eslint-plugin-async-protect#readme",
+  "bugs": {
+    "url": "https://github.com/IPWright83/eslint-plugin-async-protect/issues"
+  },
   "author": "Ian Wright",
   "scripts": {
     "test": "mocha tests --recursive"
