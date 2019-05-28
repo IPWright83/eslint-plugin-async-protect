@@ -9,6 +9,8 @@ This ESLint plugin enforces the following:
  - calls to functions with an `Async` suffix on the name should be called with `await`
 
 ## Installation
+Package: https://www.npmjs.com/package/eslint-plugin-async-protect
+
 Assuming that you already have ESLint installed, simply run:
 
 ```
