@@ -37,6 +37,18 @@ ruleTester.run("async-await", rule, {
         {
             code: `
                 (iife = async function() {
+                    return fooAsync();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
+                    return await fooAsync();
+                })();`
+        },
+        {
+            code: `
+                (iife = async function() {
                     foo();
                 })();`
         },
@@ -109,7 +121,23 @@ ruleTester.run("async-await", rule, {
         {
             code: `
                 (iife = async function() {
+                    fooAsync();
+                    return;
+                })();`,
+            errors: [{ message: getError("fooAsync", true), type: "CallExpression" }],
+        },
+        {
+            code: `
+                (iife = async function() {
                     await foo();
+                })();`,
+            errors: [{ message: getError("foo", false), type: "CallExpression" }],
+        },
+        {
+            code: `
+                (iife = async function() {
+                    await foo();
+                    return;
                 })();`,
             errors: [{ message: getError("foo", false), type: "CallExpression" }],
         },
