@@ -44,6 +44,11 @@ module.exports = {
             return node.parent.type === "AwaitExpression";
         };
 
+        const isReturned = (node) => {
+            // Immediate parent is "return" so we are returning
+            return node.parent.type === 'ReturnStatement';
+        };
+
         const CallExpression = (node) => {
             // Grab the IdentifierNode. If this isn't a pattern
             // we know about just abort
@@ -54,9 +59,10 @@ module.exports = {
 
             // Were async functions called with an await?
             const calledWithAwait = isAwaited(node);
+            const calledWithReturn = isReturned(node);
             const nameEndsWithAsync = endsWithAsync(idNode.name);
 
-            if (nameEndsWithAsync && !calledWithAwait) {
+            if (nameEndsWithAsync && !calledWithAwait && !calledWithReturn) {
                 context.report({
                     node: node,
                     message: MISSING_AWAIT,
