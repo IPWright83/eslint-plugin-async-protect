@@ -64,13 +64,14 @@ const fooAsync = function() {}
 ```
 
 ### async-await
-This rule enforces that all functions with an `Async` suffix on their name should be called with an `await`. Functions without the suffix should not be called with an `await`.
+This rule enforces that all functions with an `Async` suffix on their name should be called with an `await` or `return`. Functions without the suffix should not be called with an `await` or `return`.
 
 There are times when you may wish for an `async` function to run in the background, or where you need to call 3rd party code that doesn't follow the `async-suffix` naming convention. In that case use `// eslint-disable-line async-protect/async-await` to disable the rule for that line.
 
 ##### valid
 ```
 await fooAsync();
+return fooAsync();
 const result = await fooAsync();
 const result = (await fooAsync()).result;
 const result = await foo().bar().bazAsync();
@@ -80,7 +81,7 @@ const result = foo();
 
 ##### invalid
 ```
-await fooAsync();
+fooAsync();
 const result = fooAsync();
 const result = fooAsync().result;
 const result = foo().bar().bazAsync();
