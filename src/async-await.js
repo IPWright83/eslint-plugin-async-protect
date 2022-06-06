@@ -4,6 +4,8 @@
  */
 "use strict";
 
+const { ignoreAngularFunctionName } = require("./ignoreAngularFunctionName");
+
 module.exports = {
     type: "suggestion",
     meta: {
@@ -15,15 +17,14 @@ module.exports = {
         },
     },
 
-    create: function(context) {
+    create: function (context) {
         const MISSING_AWAIT = "The call to '{{name}}' is missing an await";
         const EXTRA_AWAIT = "The call to '{{name}}' has an un-needed await";
 
         const endsWithAsync = (name) => name.endsWith("Async");
 
         const getName = (node) => {
-
-            switch(node.type) {
+            switch (node.type) {
                 case "CallExpression": {
                     return getName(node.callee);
                 }
@@ -36,7 +37,7 @@ module.exports = {
             }
 
             return null;
-        }
+        };
 
         // Has the call been awaited?
         const isAwaited = (node) => {
@@ -46,7 +47,7 @@ module.exports = {
 
         const isReturned = (node) => {
             // Immediate parent is "return" so we are returning
-            return node.parent.type === 'ReturnStatement';
+            return node.parent.type === "ReturnStatement";
         };
 
         const CallExpression = (node) => {
@@ -61,6 +62,11 @@ module.exports = {
             const calledWithAwait = isAwaited(node);
             const calledWithReturn = isReturned(node);
             const nameEndsWithAsync = endsWithAsync(idNode.name);
+
+            // Skip the rule if this looks like an angular lifecycle event
+            if (ignoreAngularFunctionName(idNode.name)) {
+                return;
+            }
 
             if (nameEndsWithAsync && !calledWithAwait && !calledWithReturn) {
                 context.report({
@@ -82,5 +88,5 @@ module.exports = {
         return {
             CallExpression,
         };
-    }
+    },
 };

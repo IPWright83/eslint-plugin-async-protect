@@ -4,6 +4,8 @@
  */
 "use strict";
 
+const { ignoreAngularFunctionName } = require("./ignoreAngularFunctionName");
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -19,7 +21,7 @@ module.exports = {
         },
     },
 
-    create: function(context) {
+    create: function (context) {
         const MISSING_ASYNC = "Names should end with 'Async' for async functions. Rename '{{name}}' to '{{name}}Async'";
         const EXTRA_ASYNC = "Non async names should not end with 'Async'. Rename '{{name}}Async' to '{{name}}'";
 
@@ -36,11 +38,15 @@ module.exports = {
             if (!identifier || !identifier.name) {
                 return;
             }
-            
+
             const nameEndsWithAsync = endsWithAsync(identifier.name);
 
-            if (isAsync && !nameEndsWithAsync) {
+            // Skip the rule if this looks like an angular lifecycle event
+            if (ignoreAngularFunctionName(identifier.name)) {
+                return;
+            }
 
+            if (isAsync && !nameEndsWithAsync) {
                 context.report({
                     node: identifier,
                     message: MISSING_ASYNC,
@@ -64,10 +70,10 @@ module.exports = {
                     // },
                 });
             }
-        }
+        };
 
         const VariableDeclarator = (node) => {
-            const init = node.init
+            const init = node.init;
             const identifier = node.id;
 
             if (init && identifier) {
@@ -98,7 +104,7 @@ module.exports = {
             if (identifier && functionExpression && functionExpression.async !== undefined) {
                 check(node, identifier, functionExpression.async);
             }
-        }
+        };
 
         const Property = (node) => {
             // Only care for Methods
@@ -117,5 +123,5 @@ module.exports = {
             Property,
             AssignmentExpression,
         };
-    }
+    },
 };
