@@ -21,10 +21,10 @@ RuleTester.setDefaultConfig({
 //------------------------------------------------------------------------------
 const ruleTester = new RuleTester();
 
-const getError = (name, asyncMissing) => asyncMissing ?
-        `Names should end with 'Async' for async functions. Rename '${name}' to '${name}Async'` :
-        `Non async names should not end with 'Async'. Rename '${name}Async' to '${name}'`;
-
+const getError = (name, asyncMissing) =>
+    asyncMissing
+        ? `Names should end with 'Async' for async functions. Rename '${name}' to '${name}Async'`
+        : `Non async names should not end with 'Async'. Rename '${name}Async' to '${name}'`;
 
 const getFunctionError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
 const getMethodError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
@@ -33,14 +33,13 @@ const getAssignmentError = (name, asyncMissing) => ({ message: getError(name, as
 const getPropertyError = (name, asyncMissing) => ({ message: getError(name, asyncMissing), type: "Identifier" });
 
 ruleTester.run("async-suffix", rule, {
-
     valid: [
         { code: `async function fooAsync() { }` },
-        { code: `function foo() { }`},
-        { code: `const barAsync = async function() { }`},
-        { code: `const bar = function() { }`},
-        { code: `const bazAsync = async () => { }`},
-        { code: `const baz = () => { }`},
+        { code: `function foo() { }` },
+        { code: `const barAsync = async function() { }` },
+        { code: `const bar = function() { }` },
+        { code: `const bazAsync = async () => { }` },
+        { code: `const baz = () => { }` },
         {
             code: `class Foo {
                        async fooAsync() { }
@@ -100,7 +99,10 @@ ruleTester.run("async-suffix", rule, {
             code: `let foo;
                    foo = function() { };
                   `,
-        }
+        },
+        {
+            code: `ngOnInit = async function() { };`,
+        },
     ],
 
     invalid: [
@@ -166,9 +168,12 @@ ruleTester.run("async-suffix", rule, {
                        bazAsync: () => { }
                    }`,
             errors: [
-                getPropertyError("foo", true), getPropertyError("foo", false),
-                getPropertyError("bar", true), getPropertyError("bar", false),
-                getPropertyError("baz", true), getPropertyError("baz", false),
+                getPropertyError("foo", true),
+                getPropertyError("foo", false),
+                getPropertyError("bar", true),
+                getPropertyError("bar", false),
+                getPropertyError("baz", true),
+                getPropertyError("baz", false),
             ],
         },
         {
@@ -195,5 +200,5 @@ ruleTester.run("async-suffix", rule, {
                   `,
             errors: [getAssignmentError("foo", false)],
         },
-    ]
+    ],
 });
