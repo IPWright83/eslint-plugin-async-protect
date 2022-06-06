@@ -111,6 +111,11 @@ module.exports = {
             const identifier = node.key;
             const functionExpression = node.value;
 
+            // Ignore shorthand node definitions
+            if (node.shorthand) {
+                return;
+            }
+
             if (identifier && functionExpression) {
                 check(node, identifier, functionExpression.async);
             }

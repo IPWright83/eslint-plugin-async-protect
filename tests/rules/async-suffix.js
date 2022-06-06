@@ -103,6 +103,16 @@ ruleTester.run("async-suffix", rule, {
         {
             code: `ngOnInit = async function() { };`,
         },
+        {
+            code: `(iifeAsync = async function() {
+                     const updateItemAsync = async function() {};
+                     return { updateItemAsync };
+                   });`,
+        },
+        {
+            code: `async function updateItemAsync() {};
+                   module.exports = { updateItemAsync };`,
+        },
     ],
 
     invalid: [
