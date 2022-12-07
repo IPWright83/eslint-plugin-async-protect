@@ -27,6 +27,10 @@ module.exports = {
 
         const endsWithAsync = (name) => name.endsWith("Async");
 
+        const isReturningPromise = (node) => {
+            return node.value?.body?.body?.[0]?.argument?.callee?.name === 'Promise';
+        };
+
         /**
          * Check a node is valid
          * @param  {Object}  node       The root node that is being checked
@@ -86,7 +90,7 @@ module.exports = {
             const functionExpression = node.value;
 
             if (identifier && functionExpression) {
-                check(node, identifier, functionExpression.async);
+                check(node, identifier, functionExpression.async || isReturningPromise(node));
             }
         };
 
@@ -94,7 +98,7 @@ module.exports = {
             const identifier = node.id;
 
             if (identifier) {
-                check(node, identifier, node.async);
+                check(node, identifier, node.async || isReturningPromise(node));
             }
         };
 
