@@ -47,6 +47,12 @@ ruleTester.run("async-suffix", rule, {
                    }`,
         },
         {
+            code: `class Foo {
+                       fooAsync() { return new Promise((resolve) => resolve()); }
+                       foo() {}
+                   }`,
+        },
+        {
             code: `const obj = {
                        async fooAsync() {},
                        foo() {}
@@ -143,6 +149,13 @@ ruleTester.run("async-suffix", rule, {
         {
             code: `class Foo {
                        async foo() { }
+                       fooAsync() {}
+                   }`,
+            errors: [getMethodError("foo", true), getMethodError("foo", false)],
+        },
+        {
+            code: `class Foo {
+                       foo() { return new Promise((resolve) => resolve()); }
                        fooAsync() {}
                    }`,
             errors: [getMethodError("foo", true), getMethodError("foo", false)],
