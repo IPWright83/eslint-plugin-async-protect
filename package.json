@@ -18,7 +18,7 @@
     "test": "mocha tests --recursive"
   },
   "peerDependencies": {
-    "eslint": "^5.0.0"
+    "eslint": "5 - 8"
   },
   "devDependencies": {
     "eslint": "~5.0.0",
